@@ -109,6 +109,12 @@ public class UserControllerTest {
     }
 
     @Test
+    void when_put_unauthenticated_user_expect_valid_userModel() throws Exception {
+        mockMvc.perform(put("/api/user"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void when_get_user_expect_valid_userModel() throws Exception {
         when(userService.viewProfile(anyString(), anyLong())).thenReturn(sampleProfile());
 
@@ -130,7 +136,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void when_follow_user_without_authentication_expect_status_forbidden() throws Exception {
+    void when_follow_unauthenticated_user_expect_status_forbidden() throws Exception {
         mockMvc.perform(post("/api/profiles/user/follow"))
                 .andExpect(status().isForbidden());
     }
@@ -147,7 +153,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void when_unfollow_user_without_authentication_expect_status_forbidden() throws Exception {
+    void when_unfollow_unauthenticated_user_expect_status_forbidden() throws Exception {
         mockMvc.perform(delete("/api/profiles/user/follow"))
                 .andExpect(status().isForbidden());
     }

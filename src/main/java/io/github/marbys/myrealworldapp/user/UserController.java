@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
 @Slf4j
 @RestController
 @CrossOrigin
@@ -50,15 +52,14 @@ public class UserController {
     @PostMapping("/profiles/{username}/follow")
     public ResponseEntity<?> follow(@PathVariable String username, @AuthenticationPrincipal JwtPayload jwtPayload) {
         if (jwtPayload == null)
-            return null;
-
+            return ResponseEntity.status(FORBIDDEN).build();
         return ResponseEntity.ok(userService.followUser(username, jwtPayload.getSub()));
     }
 
     @DeleteMapping("/profiles/{username}/follow")
     public ResponseEntity<?> unfollow(@PathVariable String username, @AuthenticationPrincipal JwtPayload jwtPayload) {
         if (jwtPayload == null)
-            return null;
+            return ResponseEntity.status(FORBIDDEN).build();
         return ResponseEntity.ok(userService.unfollowUser(username, jwtPayload.getSub()));
     }
 }
