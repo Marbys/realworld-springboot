@@ -1,81 +1,73 @@
 package io.github.marbys.myrealworldapp.user;
 
-import io.github.marbys.myrealworldapp.model.Article;
+import io.github.marbys.myrealworldapp.profile.Profile;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.REMOVE;
 
 @Entity
 @Data
+@AllArgsConstructor
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserEntity implements UserDetails {
+@Table(name = "users")
+public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull private String username;
-    @NonNull private String password;
-    @NonNull private String email;
-    private String bio;
-    private String image;
+    @NonNull
+    private String password;
+
+    @NonNull
+    @Column(unique = true)
+    private String email;
+
+    @Embedded
+    @NonNull
+    private Profile profile;
+
+    @JoinTable(name = "user_followings",
+            joinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "followee_id", referencedColumnName = "id"))
+    @OneToMany(cascade = REMOVE)
+    private Set<UserEntity> followingUsers = new HashSet<>();
+
+    public UserEntity follow(UserEntity follower) {
+        followingUsers.add(follower);
+        return this;
+    }
+
+    public UserEntity unfollow(UserEntity follower) {
+        followingUsers.remove(follower);
+        return this;
+    }
 
     public boolean matchesPassword(String rawPassword, PasswordEncoder encoder) {
         return encoder.matches(rawPassword, password);
     }
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public static UserEntity from(String username, String password, String email) {
+        return new UserEntity(password, email, new Profile(username));
     }
 
-
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity user = (UserEntity) o;
+        return email.equals(user.email);
     }
 
-    /**
-     * Indicates whether the user is locked or unlocked. A locked user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
-     */
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    /**
-     * Indicates whether the user's credentials (password) has expired. Expired
-     * credentials prevent authentication.
-     *
-     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
-     * <code>false</code> if no longer valid (ie expired)
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    /**
-     * Indicates whether the user is enabled or disabled. A disabled user cannot be
-     * authenticated.
-     *
-     * @return <code>true</code> if the user is enabled, <code>false</code> otherwise
-     */
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }

@@ -1,6 +1,9 @@
 package io.github.marbys.myrealworldapp.user;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.validation.annotation.Validated;
 

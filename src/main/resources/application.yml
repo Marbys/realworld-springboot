@@ -11,6 +11,11 @@ spring:
   h2:
     console:
       enabled: true
+  jpa:
+    show-sql: true
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
 logging:
   level:
     slf4j: info

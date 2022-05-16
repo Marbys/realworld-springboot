@@ -9,32 +9,31 @@ import javax.security.auth.callback.PasswordCallback;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mappings({
-            @Mapping(target = "password", ignore = true)
-    })
-    User userModelToUser(UserModel model);
+//    @Mappings({
+//            @Mapping(target = "password", ignore = true)
+//    })
+//    User userModelToUser(UserModel model);
+//
+//    UserModel userToUserModel(User user);
+//
+//    @Mappings({
+//            @Mapping(target = "id", ignore = true)
+//    })
+//    UserEntity userToUserEntity(User user);
 
-    UserModel userToUserModel(User user);
-
     @Mappings({
-            @Mapping(target = "id", ignore = true)
-    })
-    UserEntity userToUserEntity(User user);
-
-    @Mappings({
-           @Mapping(target = "token", ignore = true)
+           @Mapping(target = "token", ignore = true),
+            @Mapping(target = "username", source = "profile.username")
     })
     UserModel userEntityToUserModel(UserEntity entity);
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true)
-    })
-    UserEntity userPutDTOToUserEntity(UserPutDTO userPutDTO);
+//    @Mappings({
+//            @Mapping(target = "id", ignore = true)
+//    })
+//    UserEntity userPutDTOToUserEntity(UserPutDTO userPutDTO);
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "bio", ignore = true),
-            @Mapping(target = "image", ignore = true)
-    })
-    UserEntity userPostDTOToUserEntity(UserPostDTO user);
+//    @Mappings({
+//            @Mapping(target = "id", ignore = true),
+//    })
+//    UserEntity userPostDTOToUserEntity(UserPostDTO user);
 }
