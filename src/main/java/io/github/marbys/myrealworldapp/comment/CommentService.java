@@ -7,36 +7,56 @@ import io.github.marbys.myrealworldapp.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
 
-    private CommentRepository commentRepository;
-    private UserRepository userRepository;
-    private ArticleRepository articleRepository;
+  private CommentRepository commentRepository;
+  private UserRepository userRepository;
+  private ArticleRepository articleRepository;
 
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, ArticleRepository articleRepository) {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-        this.articleRepository = articleRepository;
-    }
+  public CommentService(
+      CommentRepository commentRepository,
+      UserRepository userRepository,
+      ArticleRepository articleRepository) {
+    this.commentRepository = commentRepository;
+    this.userRepository = userRepository;
+    this.articleRepository = articleRepository;
+  }
 
-    public Comment addComment(String slug, Comment comment, long id) {
-        UserEntity author = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        Article article = articleRepository.findBySlug(slug).orElseThrow(NoSuchElementException::new);
+  public CommentModel addComment(String slug, CommentPostDTO commentPostDTO, long id) {
+    UserEntity author = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    Article article = articleRepository.findBySlug(slug).orElseThrow(NoSuchElementException::new);
 
-        comment.setAuthor(author);
-        comment.setArticle(article);
+    Comment comment = Comment.fromPostDTO(commentPostDTO);
+    comment.setAuthor(author);
+    comment.setArticle(article);
 
-        commentRepository.save(comment);
-        return comment;
-    }
+    commentRepository.save(comment);
+    return CommentModel.fromComment(comment);
+  }
 
-    public void deleteComment(String slug, long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
-        Article article = articleRepository.findBySlug(slug).orElseThrow(NoSuchElementException::new);
+  public void deleteComment(String slug, long commentId) {
+    Comment comment =
+        commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
+    Article article = articleRepository.findBySlug(slug).orElseThrow(NoSuchElementException::new);
 
-        if (article.getComments().contains(comment))
-            commentRepository.deleteById(commentId);
-    }
+    if (article.getComments().contains(comment)) commentRepository.deleteById(commentId);
+  }
+
+  public Set<Comment> getAllCommentsFromArticle(String slug) {
+    return articleRepository
+        .findBySlug(slug)
+        .orElseThrow(NoSuchElementException::new)
+        .getComments();
+  }
+
+  public Set<Comment> getAllCommentsFromArticle(String slug, long sub) {
+    UserEntity user = userRepository.findById(sub).orElseThrow(NoSuchElementException::new);
+    return getAllCommentsFromArticle(slug).stream()
+        .map(user::withFollowingComment)
+        .collect(Collectors.toSet());
+  }
 }

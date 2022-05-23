@@ -8,15 +8,15 @@ import java.util.Optional;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return Optional.of(authentication)
-                .map(a -> EmailAuthenticationToken.class.cast(a))
-                .orElseThrow(IllegalStateException::new);
-    }
+  @Override
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    return Optional.of(authentication)
+        .map(EmailAuthenticationToken.class::cast)
+        .orElseThrow(IllegalStateException::new);
+  }
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return EmailAuthenticationToken.class.isAssignableFrom(authentication);
-    }
+  @Override
+  public boolean supports(Class<?> authentication) {
+    return EmailAuthenticationToken.class.isAssignableFrom(authentication);
+  }
 }

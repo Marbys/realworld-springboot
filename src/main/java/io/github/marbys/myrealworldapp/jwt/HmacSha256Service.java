@@ -11,19 +11,17 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class HmacSha256Service {
 
-    private static String ALG = "HmacSHA256";
+  private static String ALG = "HmacSHA256";
 
-    public static byte[] hash(String message, String secret) {
-        final Mac hmacSHA256;
-        try {
-            hmacSHA256 = Mac.getInstance(ALG);
-            hmacSHA256.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), ALG));
-            byte[] signed = hmacSHA256.doFinal(message.getBytes(StandardCharsets.UTF_8));
-            return signed;
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        throw new IllegalStateException("Unable to hash message with: " + ALG);
+  public static byte[] hash(String message, String secret) {
+    final Mac hmacSHA256;
+    try {
+      hmacSHA256 = Mac.getInstance(ALG);
+      hmacSHA256.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), ALG));
+      return hmacSHA256.doFinal(message.getBytes(StandardCharsets.UTF_8));
+    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+      e.printStackTrace();
     }
-
+    throw new IllegalStateException("Unable to hash message with: " + ALG);
+  }
 }

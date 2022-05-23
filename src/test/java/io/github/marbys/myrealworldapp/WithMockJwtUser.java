@@ -9,5 +9,5 @@ import java.lang.annotation.RetentionPolicy;
 @WithSecurityContext(factory = WithMockJwtContextFactory.class)
 public @interface WithMockJwtUser {
 
-    long userId() default 0l;
+  long userId() default 0l;
 }

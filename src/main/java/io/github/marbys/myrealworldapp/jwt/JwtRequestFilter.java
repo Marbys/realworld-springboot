@@ -1,5 +1,6 @@
 package io.github.marbys.myrealworldapp.jwt;
 
+import lombok.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,18 +15,20 @@ import java.util.Optional;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final JwtUserService service;
+  private final JwtUserService service;
 
-    public JwtRequestFilter(JwtUserService service) {
-        this.service = service;
-    }
+  public JwtRequestFilter(JwtUserService service) {
+    this.service = service;
+  }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  @Override
+  protected void doFilterInternal(
+          HttpServletRequest request, @NonNull HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
 
-        Optional.ofNullable(request.getHeader("authorization"))
-                .map(s -> new EmailAuthenticationToken(s, service.payloadFromToken(s)))
-                .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
-        filterChain.doFilter(request, response);
-    }
+    Optional.ofNullable(request.getHeader("authorization"))
+        .map(s -> new EmailAuthenticationToken(s, service.payloadFromToken(s)))
+        .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
+    filterChain.doFilter(request, response);
+  }
 }

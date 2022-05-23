@@ -22,71 +22,83 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "articles")
 public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String slug;
+  private String slug;
 
-    @Embedded
-    @NotNull
-    private ArticleContent articleContent;
+  @Embedded @NotNull private ArticleContent articleContent;
 
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
+  @CreatedDate private Instant createdAt;
+  @LastModifiedDate private Instant updatedAt;
 
-    @JoinTable(name = "article_favourites",
-            joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<UserEntity> userFavorited = new HashSet<>();
+  @JoinTable(
+      name = "article_favourites",
+      joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+  private Set<UserEntity> userFavorites = new HashSet<>();
 
-    @Transient
-    private int favoritesCount;
+  @Transient private boolean favorited = false;
 
-    @OneToMany(mappedBy = "article",fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-    public Set<Comment> comments = new HashSet<>();
+  @OneToMany(
+      mappedBy = "article",
+      fetch = FetchType.EAGER,
+      cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+  public Set<Comment> comments = new HashSet<>();
 
-    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne
-    private UserEntity author;
+  @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+  @ManyToOne
+  private UserEntity author;
 
-    public Article(ArticleContent articleContent, UserEntity author) {
-        this.articleContent = articleContent;
-        this.author = author;
-    }
+  public Article(ArticleContent articleContent, UserEntity author) {
+    this.articleContent = articleContent;
+    this.author = author;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Article article = (Article) o;
-        return articleContent.equals(article.articleContent) && author.equals(article.author);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Article article = (Article) o;
+    return articleContent.equals(article.articleContent) && author.equals(article.author);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(articleContent, author);
-    }
+  public int getFavoritesCount() {
+    return userFavorites.size();
+  }
 
-    @Override
-    public String toString() {
-        return "Article{" +
-                "id=" + id +
-                ", slug='" + slug + '\'' +
-                ", articleContent=" + articleContent +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", favoritesCount=" + favoritesCount +
-                '}';
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(articleContent, author);
+  }
 
-    @PrePersist
-    @PreUpdate
-    private void generateSlug() {
-        this.slug = articleContent.getTitle().toLowerCase(Locale.ROOT).replaceAll(" ", "-");
-    }
+  @Override
+  public String toString() {
+    return "Article{"
+        + "id="
+        + id
+        + ", slug='"
+        + slug
+        + '\''
+        + ", articleContent="
+        + articleContent
+        + ", createdAt="
+        + createdAt
+        + ", updatedAt="
+        + updatedAt
+        + '}';
+  }
+
+  public Article setFavourite(boolean favorited) {
+    this.favorited = favorited;
+    return this;
+  }
+
+  @PrePersist
+  @PreUpdate
+  private void generateSlug() {
+    this.slug = articleContent.getTitle().toLowerCase(Locale.ROOT).replaceAll(" ", "-");
+  }
 }
-
