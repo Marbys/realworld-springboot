@@ -1,10 +1,12 @@
 package io.github.marbys.myrealworldapp.controller;
 
-import io.github.marbys.myrealworldapp.service.CommentService;
 import io.github.marbys.myrealworldapp.domain.model.CommentModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleCommentModel;
 import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
+import io.github.marbys.myrealworldapp.service.CommentService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,13 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/articles")
+@RequiredArgsConstructor
 public class CommentController {
 
-  private CommentService service;
-
-  public CommentController(CommentService service) {
-    this.service = service;
-  }
+  private final CommentService service;
 
   @PostMapping("/{slug}/comments")
   public ResponseEntity<CommentModel> addComment(

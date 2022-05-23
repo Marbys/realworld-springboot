@@ -7,6 +7,8 @@ import io.github.marbys.myrealworldapp.dto.UserPostDTO;
 import io.github.marbys.myrealworldapp.dto.UserPutDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
 import io.github.marbys.myrealworldapp.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,17 +20,12 @@ import java.util.Optional;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-@Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
 
   private final UserService userService;
-
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
 
   @PostMapping("/users/login")
   public ResponseEntity<UserModel> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {

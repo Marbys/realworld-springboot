@@ -1,14 +1,13 @@
 package io.github.marbys.myrealworldapp.domain.model;
 
 import io.github.marbys.myrealworldapp.domain.Article;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Value;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class MultipleArticleModel {
 

@@ -7,6 +7,8 @@ import io.github.marbys.myrealworldapp.infrastructure.jwt.PageRequest;
 import io.github.marbys.myrealworldapp.domain.Tag;
 import io.github.marbys.myrealworldapp.domain.User;
 import io.github.marbys.myrealworldapp.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,18 +20,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ArticleService {
 
-  private UserRepository userRepository;
-  private ArticleRepository articleRepository;
-  private TagService tagService;
-
-  public ArticleService(
-      UserRepository userRepository, ArticleRepository articleRepository, TagService tagService) {
-    this.userRepository = userRepository;
-    this.articleRepository = articleRepository;
-    this.tagService = tagService;
-  }
+  private final UserRepository userRepository;
+  private final ArticleRepository articleRepository;
+  private final TagService tagService;
 
   public Article getArticleBySlug(String slug) {
     return articleRepository.findBySlug(slug).orElseThrow(NoSuchElementException::new);

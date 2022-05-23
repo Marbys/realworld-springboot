@@ -5,25 +5,23 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.github.marbys.myrealworldapp.domain.Comment;
 import io.github.marbys.myrealworldapp.domain.Profile;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
-@Data
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@NoArgsConstructor
 @JsonTypeName("comment")
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 public class CommentModel {
-  private long id;
-  private Instant createdAt;
-  private Instant updatedAt;
-  private String body;
+  long id;
+  Instant createdAt;
+  Instant updatedAt;
+  String body;
 
   @JsonProperty(namespace = "author")
-  private Profile.ProfileModelNested author;
+  Profile.ProfileModelNested author;
 
   public static CommentModel fromComment(Comment comment) {
     return new CommentModel(
@@ -34,16 +32,17 @@ public class CommentModel {
         Profile.ProfileModelNested.fromProfile(comment.getAuthor().getProfile()));
   }
 
-  @Data
+  @Value
+  @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
   @AllArgsConstructor
   public static class CommentModelNested {
-    private long id;
-    private Instant createdAt;
-    private Instant updatedAt;
-    private String body;
+    long id;
+    Instant createdAt;
+    Instant updatedAt;
+    String body;
 
     @JsonProperty(namespace = "author")
-    private Profile.ProfileModelNested author;
+    Profile.ProfileModelNested author;
 
     public static CommentModelNested fromCommentModel(CommentModel comment) {
       return new CommentModelNested(

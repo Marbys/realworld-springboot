@@ -8,6 +8,7 @@ import io.github.marbys.myrealworldapp.dto.UserPostDTO;
 import io.github.marbys.myrealworldapp.dto.UserPutDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
 import io.github.marbys.myrealworldapp.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,12 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-  private UserRepository repository;
-  private JwtUserService service;
-  private PasswordEncoder encoder;
-
-  public UserService(UserRepository repository, JwtUserService service, PasswordEncoder encoder) {
-    this.repository = repository;
-    this.service = service;
-    this.encoder = encoder;
-  }
+  private final UserRepository repository;
+  private final JwtUserService service;
+  private final PasswordEncoder encoder;
 
   public UserModel login(UserLoginDTO userLoginDTO) {
     return repository

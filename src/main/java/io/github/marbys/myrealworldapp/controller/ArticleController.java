@@ -1,10 +1,12 @@
 package io.github.marbys.myrealworldapp.controller;
 
-import io.github.marbys.myrealworldapp.service.ArticleService;
 import io.github.marbys.myrealworldapp.domain.ArticleContent;
 import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleArticleModel;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
+import io.github.marbys.myrealworldapp.service.ArticleService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,10 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ArticleController {
-  private ArticleService service;
 
-  public ArticleController(ArticleService service) {
-    this.service = service;
-  }
+  private final ArticleService service;
 
   @GetMapping("/articles/{slug}")
   public ResponseEntity<ArticleModel> getArticle(

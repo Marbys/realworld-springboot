@@ -3,25 +3,23 @@ package io.github.marbys.myrealworldapp.domain.model;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.github.marbys.myrealworldapp.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
-@Data
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@NoArgsConstructor
 @JsonTypeName("user")
 @JsonTypeInfo(include = WRAPPER_OBJECT, use = NAME)
 public class UserModel {
 
-  private String email;
-  private String username;
-  private String token;
-  private String bio;
-  private String image;
+  String email;
+  String username;
+  String token;
+  String bio;
+  String image;
 
   public static UserModel fromEntityAndToken(User entity, String token) {
     String bio = entity.getProfile().getBio() == null ? "" : entity.getProfile().getBio();

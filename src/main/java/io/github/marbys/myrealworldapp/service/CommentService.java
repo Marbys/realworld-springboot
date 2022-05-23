@@ -8,6 +8,7 @@ import io.github.marbys.myrealworldapp.domain.User;
 import io.github.marbys.myrealworldapp.domain.model.CommentModel;
 import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
 import io.github.marbys.myrealworldapp.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -15,20 +16,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
-  private CommentRepository commentRepository;
-  private UserRepository userRepository;
-  private ArticleRepository articleRepository;
-
-  public CommentService(
-      CommentRepository commentRepository,
-      UserRepository userRepository,
-      ArticleRepository articleRepository) {
-    this.commentRepository = commentRepository;
-    this.userRepository = userRepository;
-    this.articleRepository = articleRepository;
-  }
+  private final CommentRepository commentRepository;
+  private final UserRepository userRepository;
+  private final ArticleRepository articleRepository;
 
   public CommentModel addComment(String slug, CommentPostDTO commentPostDTO, long id) {
     User author = userRepository.findById(id).orElseThrow(NoSuchElementException::new);

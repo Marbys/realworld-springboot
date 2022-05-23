@@ -1,12 +1,11 @@
 package io.github.marbys.myrealworldapp.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Value;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class MultipleTagModel {
   List<String> tags;

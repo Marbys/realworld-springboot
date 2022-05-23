@@ -1,14 +1,16 @@
 package io.github.marbys.myrealworldapp.domain.model;
 
 import io.github.marbys.myrealworldapp.domain.Tag;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data
+@Value
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class TagModel {
-  private String tag;
+  String tag;
 
   public static String fromTag(Tag tag) {
     return tag.getName();

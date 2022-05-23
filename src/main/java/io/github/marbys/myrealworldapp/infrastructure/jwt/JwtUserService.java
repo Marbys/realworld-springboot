@@ -3,11 +3,13 @@ package io.github.marbys.myrealworldapp.infrastructure.jwt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.marbys.myrealworldapp.domain.User;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
+@AllArgsConstructor
 public class JwtUserService {
 
   private static final long TOKEN_LIFETIME = 3600;
@@ -16,11 +18,6 @@ public class JwtUserService {
 
   private final ObjectMapper mapper;
   private final Base64Util base64Util;
-
-  public JwtUserService(ObjectMapper mapper, Base64Util base64Util) {
-    this.mapper = mapper;
-    this.base64Util = base64Util;
-  }
 
   public String tokenFromUserEntity(User entity) {
     JwtPayload jwtPayload =

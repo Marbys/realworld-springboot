@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface ArticleRepository extends PagingAndSortingRepository<Article, Long> {
 
   Article findByAuthor_Id(long id);
