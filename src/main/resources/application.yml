@@ -16,3 +16,7 @@ logging:
   level:
     slf4j: info
     root: info
+
+lombok:
+  anyConstructor:
+    addConstructorProperties: true

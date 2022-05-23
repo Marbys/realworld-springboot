@@ -1,14 +1,14 @@
 package io.github.marbys.myrealworldapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marbys.myrealworldapp.article.ArticleContent;
-import io.github.marbys.myrealworldapp.article.ArticleModel;
-import io.github.marbys.myrealworldapp.comment.CommentPostDTO;
-import io.github.marbys.myrealworldapp.tag.Tag;
-import io.github.marbys.myrealworldapp.user.UserLoginDTO;
-import io.github.marbys.myrealworldapp.user.UserModel;
-import io.github.marbys.myrealworldapp.user.UserPostDTO;
-import io.github.marbys.myrealworldapp.user.UserPutDTO;
+import io.github.marbys.myrealworldapp.domain.ArticleContent;
+import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
+import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
+import io.github.marbys.myrealworldapp.domain.Tag;
+import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.domain.model.UserModel;
+import io.github.marbys.myrealworldapp.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.dto.UserPutDTO;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

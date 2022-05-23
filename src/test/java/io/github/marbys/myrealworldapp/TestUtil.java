@@ -1,7 +1,11 @@
 package io.github.marbys.myrealworldapp;
 
-import io.github.marbys.myrealworldapp.user.Profile;
-import io.github.marbys.myrealworldapp.user.*;
+import io.github.marbys.myrealworldapp.domain.User;
+import io.github.marbys.myrealworldapp.domain.Profile;
+import io.github.marbys.myrealworldapp.domain.model.UserModel;
+import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.dto.UserPutDTO;
 
 public class TestUtil {
   public static String USERNAME = "user";
@@ -12,8 +16,8 @@ public class TestUtil {
     return new Profile(USERNAME, "bio", "image", false);
   }
 
-  public static UserEntity sampleUser() {
-    return new UserEntity(PASSWORD, EMAIL, new Profile(USERNAME));
+  public static User sampleUser() {
+    return new User(PASSWORD, EMAIL, new Profile(USERNAME));
   }
 
   public static UserModel sampleUserModel() {

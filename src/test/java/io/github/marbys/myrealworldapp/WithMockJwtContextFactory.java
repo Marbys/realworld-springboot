@@ -1,6 +1,6 @@
 package io.github.marbys.myrealworldapp;
 
-import io.github.marbys.myrealworldapp.jwt.JwtPayload;
+import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;

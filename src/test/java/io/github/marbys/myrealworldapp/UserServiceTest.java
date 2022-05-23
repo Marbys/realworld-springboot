@@ -1,9 +1,9 @@
 package io.github.marbys.myrealworldapp;
 
-import io.github.marbys.myrealworldapp.jwt.JwtUserService;
-import io.github.marbys.myrealworldapp.user.UserModel;
-import io.github.marbys.myrealworldapp.user.UserRepository;
-import io.github.marbys.myrealworldapp.user.UserService;
+import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
+import io.github.marbys.myrealworldapp.domain.model.UserModel;
+import io.github.marbys.myrealworldapp.repository.UserRepository;
+import io.github.marbys.myrealworldapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,8 +1,8 @@
 package io.github.marbys.myrealworldapp;
 
-import io.github.marbys.myrealworldapp.tag.Tag;
-import io.github.marbys.myrealworldapp.tag.TagRepository;
-import io.github.marbys.myrealworldapp.tag.TagService;
+import io.github.marbys.myrealworldapp.domain.Tag;
+import io.github.marbys.myrealworldapp.repository.TagRepository;
+import io.github.marbys.myrealworldapp.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

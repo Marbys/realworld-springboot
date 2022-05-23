@@ -1,9 +1,13 @@
 package io.github.marbys.myrealworldapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marbys.myrealworldapp.jwt.HmacSha256Service;
-import io.github.marbys.myrealworldapp.jwt.JwtUserService;
-import io.github.marbys.myrealworldapp.user.*;
+import io.github.marbys.myrealworldapp.controller.UserController;
+import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.infrastructure.jwt.HmacSha256Service;
+import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
+import io.github.marbys.myrealworldapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
