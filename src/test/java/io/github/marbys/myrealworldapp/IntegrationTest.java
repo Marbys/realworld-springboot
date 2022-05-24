@@ -1,14 +1,10 @@
 package io.github.marbys.myrealworldapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marbys.myrealworldapp.domain.ArticleContent;
-import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
-import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
 import io.github.marbys.myrealworldapp.domain.Tag;
-import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.UserModel;
-import io.github.marbys.myrealworldapp.dto.UserPostDTO;
-import io.github.marbys.myrealworldapp.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.dto.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -74,7 +70,7 @@ public class IntegrationTest {
             .andReturn()
             .getResponse()
             .getContentAsString();
-    token = "Bearer " + objectMapper.readValue(user, UserModel.class).getToken();
+    token = "Token " + objectMapper.readValue(user, UserModel.class).getToken();
   }
 
   @Order(3)
@@ -156,7 +152,7 @@ public class IntegrationTest {
                 post("/api/articles")
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", token)
-                    .content(objectMapper.writeValueAsString(sampleArticleContent())))
+                    .content(objectMapper.writeValueAsString(sampleArticlePostDto())))
             .andExpect(status().isCreated())
             .andExpectAll(validSingleArticle())
             .andReturn()
@@ -207,8 +203,12 @@ public class IntegrationTest {
   @Order(9)
   @Test
   void put_article() throws Exception {
-    ArticleContent articleToUpdate = sampleArticleContent();
-    articleToUpdate.setDescription("New Description");
+    ArticlePostDto articleToUpdate =
+        new ArticlePostDto(
+            sampleArticlePostDto().getTitle(),
+            "New Description",
+            sampleArticlePostDto().getBody(),
+            sampleArticlePostDto().getTagList());
 
     mockMvc
         .perform(
@@ -308,12 +308,12 @@ public class IntegrationTest {
     return new UserPutDTO(EMAIL, USERNAME, PASSWORD, "bio", "image");
   }
 
-  public static ArticleContent sampleArticleContent() {
+  public static ArticlePostDto sampleArticlePostDto() {
     Set<Tag> tags = new HashSet<>();
     tags.add(new Tag("angularjs"));
     tags.add(new Tag("dragons"));
     tags.add(new Tag("reactjs"));
-    return new ArticleContent(
+    return new ArticlePostDto(
         "Bad Birds in Quarantine",
         "Ever wonder how?",
         "Struggling to go legal in the underworld of finch smuggling.",

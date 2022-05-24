@@ -1,6 +1,7 @@
 package io.github.marbys.myrealworldapp.dto;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
 
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 @Value
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@JsonTypeName("user")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 public class UserPutDTO {
 

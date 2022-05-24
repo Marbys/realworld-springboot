@@ -3,9 +3,9 @@ package io.github.marbys.myrealworldapp.controller;
 import io.github.marbys.myrealworldapp.domain.ArticleContent;
 import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleArticleModel;
+import io.github.marbys.myrealworldapp.dto.ArticlePostDto;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
 import io.github.marbys.myrealworldapp.service.ArticleService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,18 +35,22 @@ public class ArticleController {
 
   @PostMapping("/articles")
   public ResponseEntity<ArticleModel> createArticle(
-      @RequestBody ArticleContent articleContent, @AuthenticationPrincipal JwtPayload jwtPayload) {
+      @RequestBody ArticlePostDto articlePostDto, @AuthenticationPrincipal JwtPayload jwtPayload) {
+    System.out.println(articlePostDto.toString());
     return ResponseEntity.status(CREATED)
-        .body(fromArticle(service.createArticle(articleContent, jwtPayload.getSub())));
+        .body(
+            fromArticle(
+                service.createArticle(ArticleContent.from(articlePostDto), jwtPayload.getSub())));
   }
 
   @PutMapping("/articles/{slug}")
   public ResponseEntity<ArticleModel> updateArticle(
       @PathVariable String slug,
-      @RequestBody ArticleContent articleContent,
+      @RequestBody ArticlePostDto articlePostDto,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
     return ResponseEntity.ok(
-        fromArticle(service.updateArticle(slug, articleContent, jwtPayload.getSub())));
+        fromArticle(
+            service.updateArticle(slug, ArticleContent.from(articlePostDto), jwtPayload.getSub())));
   }
 
   @DeleteMapping("/articles/{slug}")
@@ -84,7 +88,8 @@ public class ArticleController {
 
   @GetMapping("/articles/feed")
   public ResponseEntity<MultipleArticleModel> articleFeed(
-      @AuthenticationPrincipal JwtPayload jwtPayload) {
-    return null;
+      @AuthenticationPrincipal JwtPayload jwtPayload, Pageable pageable) {
+    return ResponseEntity.ok(
+        MultipleArticleModel.fromArticles(service.getFeed(jwtPayload.getSub(), pageable)));
   }
 }

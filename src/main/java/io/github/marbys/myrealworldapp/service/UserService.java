@@ -41,6 +41,13 @@ public class UserService {
     return UserModel.fromEntityAndToken(entity, token);
   }
 
+  public UserModel findUser(long id) {
+    return repository
+        .findById(id)
+        .map(UserModel::fromEntity)
+        .orElseThrow(NoSuchElementException::new);
+  }
+
   public UserModel updateUser(UserPutDTO userPutDTO, Long id) {
     User userEntity = repository.findById(id).orElseThrow(NoSuchElementException::new);
     repository.save(updateUser(userPutDTO, userEntity));
@@ -80,7 +87,7 @@ public class UserService {
     repository
         .findById(id)
         .map(e -> e.follow(followee))
-        .map(e -> repository.save(e))
+        .map(repository::save)
         .map(User::getProfile)
         .orElseThrow(NoSuchElementException::new);
     return viewProfile(username, id);
@@ -92,7 +99,7 @@ public class UserService {
     repository
         .findById(id)
         .map(e -> e.unfollow(followee))
-        .map(e -> repository.save(e))
+        .map(repository::save)
         .map(User::getProfile)
         .orElseThrow(NoSuchElementException::new);
     return viewProfile(username, id);

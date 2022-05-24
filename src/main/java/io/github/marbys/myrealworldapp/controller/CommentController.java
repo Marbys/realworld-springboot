@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
@@ -24,8 +26,8 @@ public class CommentController {
       @PathVariable String slug,
       @RequestBody CommentPostDTO comment,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
-    return new ResponseEntity<>(
-        service.addComment(slug, comment, jwtPayload.getSub()), HttpStatus.CREATED);
+    return ResponseEntity.status(CREATED)
+        .body(service.addComment(slug, comment, jwtPayload.getSub()));
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)

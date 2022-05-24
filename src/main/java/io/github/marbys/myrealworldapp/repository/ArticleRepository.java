@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -31,4 +30,11 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
       @Nullable @Param("author") String author,
       @Nullable @Param("favorited") String favorited,
       Pageable pageable);
+
+  @Query(
+      "SELECT DISTINCT a FROM Article a "
+          + "LEFT JOIN a.author.followingUsers p "
+          + "WHERE "
+          + "(:viewer IS NULL OR p.profile.username IN :viewer)")
+  Page<Article> findByFavorited(@Nullable @Param("viewer") String viewer, Pageable pageable);
 }

@@ -7,9 +7,7 @@ import io.github.marbys.myrealworldapp.dto.UserPostDTO;
 import io.github.marbys.myrealworldapp.dto.UserPutDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
 import io.github.marbys.myrealworldapp.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +35,13 @@ public class UserController {
     return ResponseEntity.status(CREATED).body(userService.register(user));
   }
 
+  @GetMapping("/user")
+  public ResponseEntity<UserModel> getUser(@AuthenticationPrincipal JwtPayload jwtPayload) {
+    return ResponseEntity.ok(userService.findUser(jwtPayload.getSub()));
+  }
+
   @PutMapping("/user")
-  public ResponseEntity<?> updateUser(
+  public ResponseEntity<UserModel> updateUser(
       @RequestBody UserPutDTO userPutDTO, @AuthenticationPrincipal JwtPayload jwtPayload) {
     return ResponseEntity.ok(userService.updateUser(userPutDTO, jwtPayload.getSub()));
   }

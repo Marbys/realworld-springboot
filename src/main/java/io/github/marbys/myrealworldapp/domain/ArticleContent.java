@@ -1,6 +1,7 @@
 package io.github.marbys.myrealworldapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.marbys.myrealworldapp.dto.ArticlePostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,10 +31,18 @@ public class ArticleContent {
   private Set<Tag> tagList = new HashSet<>();
 
   public void updateArticle(ArticleContent articleContent) {
-    title = articleContent.getTitle().isEmpty() ? title : articleContent.getTitle();
+    title = articleContent.getTitle() == null ? title : articleContent.getTitle();
     description =
-        articleContent.getDescription().isEmpty() ? description : articleContent.getDescription();
-    body = articleContent.getBody().isEmpty() ? body : articleContent.getBody();
+        articleContent.getDescription() == null ? description : articleContent.getDescription();
+    body = articleContent.getBody() == null ? body : articleContent.getBody();
+  }
+
+  public static ArticleContent from(ArticlePostDto articlePostDto) {
+    return new ArticleContent(
+        articlePostDto.getTitle(),
+        articlePostDto.getDescription(),
+        articlePostDto.getBody(),
+        articlePostDto.getTagList());
   }
 
   @Override

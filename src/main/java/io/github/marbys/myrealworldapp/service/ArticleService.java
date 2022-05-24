@@ -101,4 +101,14 @@ public class ArticleService {
             })
         .collect(Collectors.toList());
   }
+
+  public List<Article> getFeed(long id, Pageable pageable) {
+    User userEntity = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    Pageable page =
+        PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"))
+            .withPage(pageable.getPageNumber());
+    return articleRepository
+        .findByFavorited(userEntity.getProfile().getUsername(), page)
+        .getContent();
+  }
 }
