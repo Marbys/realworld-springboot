@@ -15,7 +15,14 @@ For more information on how to this works with other frontends/backends, head ov
 
 # How it works
 
-> Describe the general architecture of your app here
+Application was build using:
+- Java 11
+- Spring Boot 2
+- Spring Data
+- Spring Security
+- H2 database
+- JUnit5
+- Mockito
 
 # Getting started
 Prerequisites:
