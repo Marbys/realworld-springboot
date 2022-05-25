@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.marbys.myrealworldapp.domain.Tag;
 import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.UserModel;
-import io.github.marbys.myrealworldapp.dto.*;
+import io.github.marbys.myrealworldapp.application.dto.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -104,7 +104,7 @@ public class IntegrationTest {
             .andReturn()
             .getResponse()
             .getContentAsString();
-    followed_token = "Bearer " + objectMapper.readValue(user, UserModel.class).getToken();
+    followed_token = "Token " + objectMapper.readValue(user, UserModel.class).getToken();
   }
 
   @Order(4)
@@ -151,10 +151,10 @@ public class IntegrationTest {
             .perform(
                 post("/api/articles")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", token)
+                    .header("Authorization", followed_token)
                     .content(objectMapper.writeValueAsString(sampleArticlePostDto())))
             .andExpect(status().isCreated())
-            .andExpectAll(validSingleArticle())
+            .andExpectAll(validSingleArticleModel())
             .andReturn()
             .getResponse()
             .getContentAsString();
@@ -170,7 +170,7 @@ public class IntegrationTest {
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpectAll(validSingleArticle())
+        .andExpectAll(validSingleArticleModel())
         .andExpect(jsonPath("article.favorited", is(true)));
   }
 
@@ -183,28 +183,27 @@ public class IntegrationTest {
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpectAll(validSingleArticle())
+        .andExpectAll(validSingleArticleModel())
         .andExpect(jsonPath("article.favorited", is(true)));
   }
 
   @Order(9)
   @Test
-  void unfavorite_article() throws Exception {
+  void get_article_feed() throws Exception {
     mockMvc
         .perform(
-            delete("/api/articles/{slug}/favorite", slug)
-                .header("Authorization", token)
-                .accept(MediaType.APPLICATION_JSON))
+            get("/api/articles/feed")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", token))
         .andExpect(status().isOk())
-        .andExpectAll(validSingleArticle())
-        .andExpect(jsonPath("article.favorited", is(false)));
+        .andExpectAll(validMultipleArticleModel());
   }
 
   @Order(9)
   @Test
   void put_article() throws Exception {
-    ArticlePostDto articleToUpdate =
-        new ArticlePostDto(
+    ArticlePostDTO articleToUpdate =
+        new ArticlePostDTO(
             sampleArticlePostDto().getTitle(),
             "New Description",
             sampleArticlePostDto().getBody(),
@@ -213,12 +212,25 @@ public class IntegrationTest {
     mockMvc
         .perform(
             put("/api/articles/{slug}", slug)
-                .header("Authorization", token)
+                .header("Authorization", followed_token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(articleToUpdate)))
         .andExpect(status().isOk())
-        .andExpectAll(validSingleArticle())
+        .andExpectAll(validSingleArticleModel())
         .andExpect(jsonPath("$.article.description", is("New Description")));
+  }
+
+  @Order(10)
+  @Test
+  void unfavorite_article() throws Exception {
+    mockMvc
+        .perform(
+            delete("/api/articles/{slug}/favorite", slug)
+                .header("Authorization", token)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpectAll(validSingleArticleModel())
+        .andExpect(jsonPath("article.favorited", is(false)));
   }
 
   @Order(10)
@@ -279,14 +291,14 @@ public class IntegrationTest {
     mockMvc
         .perform(get("/api/articles/{slug}", slug))
         .andExpect(status().isOk())
-        .andExpectAll(validSingleArticle());
+        .andExpectAll(validSingleArticleModel());
   }
 
   @Order(14)
   @Test
   void delete_article() throws Exception {
     mockMvc
-        .perform(delete("/api/articles/{slug}", slug).header("Authorization", token))
+        .perform(delete("/api/articles/{slug}", slug).header("Authorization", followed_token))
         .andExpect(status().isNoContent());
   }
 
@@ -308,12 +320,12 @@ public class IntegrationTest {
     return new UserPutDTO(EMAIL, USERNAME, PASSWORD, "bio", "image");
   }
 
-  public static ArticlePostDto sampleArticlePostDto() {
+  public static ArticlePostDTO sampleArticlePostDto() {
     Set<Tag> tags = new HashSet<>();
     tags.add(new Tag("angularjs"));
     tags.add(new Tag("dragons"));
     tags.add(new Tag("reactjs"));
-    return new ArticlePostDto(
+    return new ArticlePostDTO(
         "Bad Birds in Quarantine",
         "Ever wonder how?",
         "Struggling to go legal in the underworld of finch smuggling.",

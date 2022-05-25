@@ -1,13 +1,13 @@
-package io.github.marbys.myrealworldapp.service;
+package io.github.marbys.myrealworldapp.domain.service;
 
 import io.github.marbys.myrealworldapp.domain.Profile;
 import io.github.marbys.myrealworldapp.domain.User;
 import io.github.marbys.myrealworldapp.domain.model.UserModel;
-import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
-import io.github.marbys.myrealworldapp.dto.UserPostDTO;
-import io.github.marbys.myrealworldapp.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPutDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
-import io.github.marbys.myrealworldapp.repository.UserRepository;
+import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

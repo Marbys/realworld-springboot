@@ -1,9 +1,8 @@
-package io.github.marbys.myrealworldapp.controller;
+package io.github.marbys.myrealworldapp.application.controller;
 
 import io.github.marbys.myrealworldapp.domain.model.MultipleTagModel;
 import io.github.marbys.myrealworldapp.domain.model.TagModel;
-import io.github.marbys.myrealworldapp.service.TagService;
-import lombok.AllArgsConstructor;
+import io.github.marbys.myrealworldapp.domain.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

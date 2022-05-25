@@ -1,6 +1,6 @@
 package io.github.marbys.myrealworldapp.domain;
 
-import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
+import io.github.marbys.myrealworldapp.application.dto.CommentPostDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

@@ -32,11 +32,8 @@ public class JwtUserService {
   }
 
   public JwtPayload payloadFromToken(String token) {
-    System.out.println(token);
     String[] split = token.substring(6).split("\\.");
     JwtPayload jwtPayload;
-
-    System.out.println(split[0]);
 
     if (!split[0].equals(base64Util.base64FromString(HEADER)))
       throw new IllegalArgumentException("Invalid JWT Header.");

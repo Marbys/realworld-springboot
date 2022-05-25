@@ -1,4 +1,4 @@
-package io.github.marbys.myrealworldapp;
+package io.github.marbys.myrealworldapp.infrastructure.configuration;
 
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

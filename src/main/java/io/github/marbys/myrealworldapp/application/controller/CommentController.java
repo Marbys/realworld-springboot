@@ -1,11 +1,10 @@
-package io.github.marbys.myrealworldapp.controller;
+package io.github.marbys.myrealworldapp.application.controller;
 
 import io.github.marbys.myrealworldapp.domain.model.CommentModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleCommentModel;
-import io.github.marbys.myrealworldapp.dto.CommentPostDTO;
+import io.github.marbys.myrealworldapp.application.dto.CommentPostDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
-import io.github.marbys.myrealworldapp.service.CommentService;
-import lombok.AllArgsConstructor;
+import io.github.marbys.myrealworldapp.domain.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +26,16 @@ public class CommentController {
       @RequestBody CommentPostDTO comment,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
     return ResponseEntity.status(CREATED)
-        .body(service.addComment(slug, comment, jwtPayload.getSub()));
+        .body(CommentModel.fromComment(service.addComment(slug, comment, jwtPayload.getSub())));
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping("/{slug}/comments/{commentId}")
-  public void deleteComment(@PathVariable String slug, @PathVariable long commentId) {
-    service.deleteComment(slug, commentId);
+  public void deleteComment(
+      @PathVariable String slug,
+      @AuthenticationPrincipal JwtPayload jwtPayload,
+      @PathVariable long commentId) {
+    service.deleteComment(slug, commentId, jwtPayload.getSub());
   }
 
   @GetMapping("/{slug}/comments")

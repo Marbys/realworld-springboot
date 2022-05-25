@@ -1,13 +1,13 @@
-package io.github.marbys.myrealworldapp;
+package io.github.marbys.myrealworldapp.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marbys.myrealworldapp.controller.UserController;
-import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
-import io.github.marbys.myrealworldapp.dto.UserPostDTO;
-import io.github.marbys.myrealworldapp.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.infrastructure.configuration.WithMockJwtUser;
+import io.github.marbys.myrealworldapp.application.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.domain.service.UserService;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.HmacSha256Service;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
-import io.github.marbys.myrealworldapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,10 @@ public class UserControllerTest {
 
   @Test
   void when_login_user_expect_valid_userModel() throws Exception {
-    when(userService.login(new UserLoginDTO("user@gmail.com", "password")))
-        .thenReturn(sampleUserModel());
+    UserLoginDTO userLoginDTO = new UserLoginDTO("user@gmail.com", "password");
+
+    when(userService.login(userLoginDTO)).thenReturn(sampleUserModel());
+
     mockMvc
         .perform(
             post("/api/users/login")
@@ -53,11 +55,13 @@ public class UserControllerTest {
 
   @Test
   void when_login_invalid_user_expect_status_bad_request() throws Exception {
+    UserLoginDTO userLoginDTO = new UserLoginDTO("", "");
+
     mockMvc
         .perform(
             post("/api/users/login")
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new UserLoginDTO("", ""))))
+                .content(objectMapper.writeValueAsString(userLoginDTO)))
         .andExpect(status().isBadRequest());
   }
 

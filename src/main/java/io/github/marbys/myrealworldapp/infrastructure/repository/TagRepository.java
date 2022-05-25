@@ -1,4 +1,4 @@
-package io.github.marbys.myrealworldapp.repository;
+package io.github.marbys.myrealworldapp.infrastructure.repository;
 
 import io.github.marbys.myrealworldapp.domain.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;

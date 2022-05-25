@@ -1,8 +1,7 @@
-package io.github.marbys.myrealworldapp.repository;
+package io.github.marbys.myrealworldapp.infrastructure.repository;
 
 import io.github.marbys.myrealworldapp.domain.User;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

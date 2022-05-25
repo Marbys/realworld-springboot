@@ -1,9 +1,9 @@
-package io.github.marbys.myrealworldapp;
+package io.github.marbys.myrealworldapp.domain.service;
 
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
 import io.github.marbys.myrealworldapp.domain.model.UserModel;
-import io.github.marbys.myrealworldapp.repository.UserRepository;
-import io.github.marbys.myrealworldapp.service.UserService;
+import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
+import io.github.marbys.myrealworldapp.domain.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,4 +49,5 @@ public class UserServiceTest {
     UserModel login = userService.login(sampleLoginDTO());
     assertThat(login.getToken()).isEqualTo("token");
   }
+
 }

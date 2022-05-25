@@ -1,12 +1,12 @@
-package io.github.marbys.myrealworldapp.controller;
+package io.github.marbys.myrealworldapp.application.controller;
 
 import io.github.marbys.myrealworldapp.domain.Profile;
 import io.github.marbys.myrealworldapp.domain.model.UserModel;
-import io.github.marbys.myrealworldapp.dto.UserLoginDTO;
-import io.github.marbys.myrealworldapp.dto.UserPostDTO;
-import io.github.marbys.myrealworldapp.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserLoginDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPostDTO;
+import io.github.marbys.myrealworldapp.application.dto.UserPutDTO;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
-import io.github.marbys.myrealworldapp.service.UserService;
+import io.github.marbys.myrealworldapp.domain.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

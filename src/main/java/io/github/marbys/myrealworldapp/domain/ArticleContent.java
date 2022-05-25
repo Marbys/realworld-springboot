@@ -1,7 +1,7 @@
 package io.github.marbys.myrealworldapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.marbys.myrealworldapp.dto.ArticlePostDto;
+import io.github.marbys.myrealworldapp.application.dto.ArticlePostDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public class ArticleContent {
     body = articleContent.getBody() == null ? body : articleContent.getBody();
   }
 
-  public static ArticleContent from(ArticlePostDto articlePostDto) {
+  public static ArticleContent from(ArticlePostDTO articlePostDto) {
     return new ArticleContent(
         articlePostDto.getTitle(),
         articlePostDto.getDescription(),

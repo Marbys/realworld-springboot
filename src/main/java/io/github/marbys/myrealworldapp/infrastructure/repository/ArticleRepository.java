@@ -1,6 +1,7 @@
-package io.github.marbys.myrealworldapp.repository;
+package io.github.marbys.myrealworldapp.infrastructure.repository;
 
 import io.github.marbys.myrealworldapp.domain.Article;
+import io.github.marbys.myrealworldapp.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -33,8 +34,8 @@ public interface ArticleRepository extends PagingAndSortingRepository<Article, L
 
   @Query(
       "SELECT DISTINCT a FROM Article a "
-          + "LEFT JOIN a.author.followingUsers p "
+          + "LEFT JOIN a.author p "
           + "WHERE "
-          + "(:viewer IS NULL OR p.profile.username IN :viewer)")
-  Page<Article> findByFavorited(@Nullable @Param("viewer") String viewer, Pageable pageable);
+          + "(:viewer IS NULL OR p IN :#{#viewer.followingUsers})")
+  Page<Article> findByFavorited(@Nullable @Param("viewer") User viewer, Pageable pageable);
 }

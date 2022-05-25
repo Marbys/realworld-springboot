@@ -48,11 +48,11 @@ public class IntegrationTestUtils {
         validProfileInPath("comment.author"));
   }
 
-  public static ResultMatcher[] validSingleArticle() {
+  public static ResultMatcher[] validSingleArticleModel() {
     return validArticle("article");
   }
 
-  public static ResultMatcher[] validArticle(String path) {
+  private static ResultMatcher[] validArticle(String path) {
     return combine(
         new ResultMatcher[] {
           jsonPath(path).isMap(),
@@ -67,18 +67,25 @@ public class IntegrationTestUtils {
         validProfileInPath(path + ".author"));
   }
 
-  static ResultMatcher[] validMultipleArticleModel() {
+  //  public static ResultMatcher[] validSingleArticleModel() {
+  //    return combine(
+  //            new ResultMatcher[] {jsonPath("articles").isArray(), jsonPath("articlesCount",
+  // is(1))},
+  //            validArticle("articles[0]"));
+  //  }
+
+  public static ResultMatcher[] validMultipleArticleModel() {
     return combine(
         new ResultMatcher[] {jsonPath("articles").isArray(), jsonPath("articlesCount", is(1))},
         validArticle("articles[0]"));
   }
 
-  static ResultMatcher[] validSingleCommentModel() {
+  public static ResultMatcher[] validSingleCommentModel() {
     return combine(
         new ResultMatcher[] {jsonPath("comment").isMap()}, validCommentModelInPath("comment"));
   }
 
-  static ResultMatcher[] validMultipleCommentModel() {
+  public static ResultMatcher[] validMultipleCommentModel() {
     return combine(
         new ResultMatcher[] {jsonPath("comments").isArray()},
         validCommentModelInPath("comments[0]"));

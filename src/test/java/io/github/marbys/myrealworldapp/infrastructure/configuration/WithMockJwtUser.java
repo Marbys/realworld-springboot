@@ -1,4 +1,4 @@
-package io.github.marbys.myrealworldapp;
+package io.github.marbys.myrealworldapp.infrastructure.configuration;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

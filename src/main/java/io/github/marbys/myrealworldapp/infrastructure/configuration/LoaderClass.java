@@ -1,6 +1,6 @@
 package io.github.marbys.myrealworldapp.infrastructure.configuration;
 
-import io.github.marbys.myrealworldapp.repository.UserRepository;
+import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

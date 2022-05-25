@@ -1,7 +1,7 @@
-package io.github.marbys.myrealworldapp.service;
+package io.github.marbys.myrealworldapp.domain.service;
 
 import io.github.marbys.myrealworldapp.domain.Tag;
-import io.github.marbys.myrealworldapp.repository.TagRepository;
+import io.github.marbys.myrealworldapp.infrastructure.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

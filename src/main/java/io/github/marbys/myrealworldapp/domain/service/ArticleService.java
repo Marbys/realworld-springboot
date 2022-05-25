@@ -1,13 +1,12 @@
-package io.github.marbys.myrealworldapp.service;
+package io.github.marbys.myrealworldapp.domain.service;
 
-import io.github.marbys.myrealworldapp.repository.ArticleRepository;
 import io.github.marbys.myrealworldapp.domain.Article;
 import io.github.marbys.myrealworldapp.domain.ArticleContent;
-import io.github.marbys.myrealworldapp.infrastructure.jwt.PageRequest;
 import io.github.marbys.myrealworldapp.domain.Tag;
 import io.github.marbys.myrealworldapp.domain.User;
-import io.github.marbys.myrealworldapp.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import io.github.marbys.myrealworldapp.infrastructure.jwt.PageRequest;
+import io.github.marbys.myrealworldapp.infrastructure.repository.ArticleRepository;
+import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,14 +51,10 @@ public class ArticleService {
 
   public Article getArticleBySlug(String slug, long id) {
     User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
-    Article originalArticle =
-        articleRepository
-            .findBySlug(slug)
-            .map(article -> article.setFavourite(article.getUserFavorites().contains(user)))
-            .orElseThrow(NoSuchElementException::new);
-
-    if (!originalArticle.getAuthor().equals(user)) throw new IllegalStateException();
-    return originalArticle;
+    return articleRepository
+        .findBySlug(slug)
+        .map(article -> article.setFavourite(article.getUserFavorites().contains(user)))
+        .orElseThrow(NoSuchElementException::new);
   }
 
   public Article favoriteArticle(String slug, long sub) {
@@ -103,12 +98,10 @@ public class ArticleService {
   }
 
   public List<Article> getFeed(long id, Pageable pageable) {
-    User userEntity = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
     Pageable page =
         PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"))
             .withPage(pageable.getPageNumber());
-    return articleRepository
-        .findByFavorited(userEntity.getProfile().getUsername(), page)
-        .getContent();
+    return articleRepository.findByFavorited(user, page).getContent();
   }
 }

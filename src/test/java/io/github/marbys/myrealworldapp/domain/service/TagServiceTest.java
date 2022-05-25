@@ -1,8 +1,8 @@
-package io.github.marbys.myrealworldapp;
+package io.github.marbys.myrealworldapp.domain.service;
 
 import io.github.marbys.myrealworldapp.domain.Tag;
-import io.github.marbys.myrealworldapp.repository.TagRepository;
-import io.github.marbys.myrealworldapp.service.TagService;
+import io.github.marbys.myrealworldapp.infrastructure.repository.TagRepository;
+import io.github.marbys.myrealworldapp.domain.service.TagService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,12 +27,6 @@ public class TagServiceTest {
   @BeforeEach
   public void setUp() {
     tagService = new TagService(tagRepository);
-    //        ArrayList<Tag> tags = new ArrayList<>();
-    //        tags.add(new Tag("angularJS"));
-    //        tags.add(new Tag("mockito"));
-    //        tags.add(new Tag("dragon"));
-    //        when(tagRepository.findAll()).thenReturn(tags);
-    //        tagService = new TagService(tagRepository);
   }
 
   @Test

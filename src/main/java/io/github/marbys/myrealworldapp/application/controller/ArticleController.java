@@ -1,11 +1,11 @@
-package io.github.marbys.myrealworldapp.controller;
+package io.github.marbys.myrealworldapp.application.controller;
 
+import io.github.marbys.myrealworldapp.application.dto.ArticlePostDTO;
 import io.github.marbys.myrealworldapp.domain.ArticleContent;
 import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleArticleModel;
-import io.github.marbys.myrealworldapp.dto.ArticlePostDto;
+import io.github.marbys.myrealworldapp.domain.service.ArticleService;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtPayload;
-import io.github.marbys.myrealworldapp.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 import static io.github.marbys.myrealworldapp.domain.model.ArticleModel.fromArticle;
@@ -35,7 +36,8 @@ public class ArticleController {
 
   @PostMapping("/articles")
   public ResponseEntity<ArticleModel> createArticle(
-      @RequestBody ArticlePostDto articlePostDto, @AuthenticationPrincipal JwtPayload jwtPayload) {
+      @Valid @RequestBody ArticlePostDTO articlePostDto,
+      @AuthenticationPrincipal JwtPayload jwtPayload) {
     System.out.println(articlePostDto.toString());
     return ResponseEntity.status(CREATED)
         .body(
@@ -46,7 +48,7 @@ public class ArticleController {
   @PutMapping("/articles/{slug}")
   public ResponseEntity<ArticleModel> updateArticle(
       @PathVariable String slug,
-      @RequestBody ArticlePostDto articlePostDto,
+      @Valid @RequestBody ArticlePostDTO articlePostDto,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
     return ResponseEntity.ok(
         fromArticle(
