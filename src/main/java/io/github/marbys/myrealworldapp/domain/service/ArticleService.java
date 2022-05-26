@@ -8,7 +8,6 @@ import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationError
 import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationException;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.PageRequest;
 import io.github.marbys.myrealworldapp.infrastructure.repository.ArticleRepository;
-import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,21 +22,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleService {
 
-  private final UserRepository userRepository;
+  private final UserFindService userFindService;
+  private final ArticleFindService articleFindService;
   private final ArticleRepository articleRepository;
   private final TagService tagService;
 
   public Article getArticleBySlug(String slug) {
-    return articleRepository
-        .findBySlug(slug)
-        .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+    return articleFindService.findBySlug(slug);
   }
 
   public Article createArticle(ArticleContent articleContent, long id) {
-    User user =
-        userRepository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    User user = userFindService.findUserById(id);
     Article article = new Article(articleContent, user);
     Set<Tag> tags = tagService.findTags(articleContent.getTagList());
     article.getArticleContent().setTagList(tags);
@@ -56,39 +51,21 @@ public class ArticleService {
   }
 
   public Article getArticleBySlug(String slug, long id) {
-    User user =
-        userRepository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    return articleRepository
-        .findBySlug(slug)
-        .map(article -> article.setFavourite(article.getUserFavorites().contains(user)))
-        .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+    User user = userFindService.findUserById(id);
+    return articleFindService.findBySlug(slug, user);
   }
 
-  public Article favoriteArticle(String slug, long sub) {
-    User user =
-        userRepository
-            .findById(sub)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    Article article =
-        articleRepository
-            .findBySlug(slug)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+  public Article favoriteArticle(String slug, long id) {
+    User user = userFindService.findUserById(id);
+    Article article = articleFindService.findBySlug(slug);
     article.getUserFavorites().add(user);
     articleRepository.save(article);
     return article.setFavourite(true);
   }
 
-  public Article unfavoriteArticle(String slug, long sub) {
-    User user =
-        userRepository
-            .findById(sub)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    Article article =
-        articleRepository
-            .findBySlug(slug)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+  public Article unfavoriteArticle(String slug, long id) {
+    User user = userFindService.findUserById(id);
+    Article article = articleFindService.findBySlug(slug);
     article.getUserFavorites().remove(user);
     articleRepository.save(article);
     return article.setFavourite(false);
@@ -107,28 +84,28 @@ public class ArticleService {
     return articleRepository.findByFilters(tag, author, favorited, page).getContent();
   }
 
-  public List<Article> findAll(Map<String, String> params, Pageable pageable, long sub) {
-    User userEntity =
-        userRepository
-            .findById(sub)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+  public List<Article> findAll(Map<String, String> params, Pageable pageable, long id) {
+    User user = userFindService.findUserById(id);
     return findAll(params, pageable).stream()
         .peek(
             article -> {
-              if (article.getUserFavorites().contains(userEntity)) article.setFavourite(true);
-              userEntity.withFollowingArticle(article);
+              if (article.getUserFavorites().contains(user)) article.setFavourite(true);
+              user.withFollowingArticle(article);
             })
         .collect(Collectors.toList());
   }
 
   public List<Article> getFeed(long id, Pageable pageable) {
-    User user =
-        userRepository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    User user = userFindService.findUserById(id);
     Pageable page =
         PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"))
             .withPage(pageable.getPageNumber());
-    return articleRepository.findByFavorited(user, page).getContent();
+    return articleRepository.findByFavorited(user, page).getContent().stream()
+        .peek(
+            article -> {
+              if (article.getUserFavorites().contains(user)) article.setFavourite(true);
+              user.withFollowingArticle(article);
+            })
+        .collect(Collectors.toList());
   }
 }

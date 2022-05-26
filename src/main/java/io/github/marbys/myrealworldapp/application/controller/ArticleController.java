@@ -1,6 +1,7 @@
 package io.github.marbys.myrealworldapp.application.controller;
 
 import io.github.marbys.myrealworldapp.application.dto.ArticlePostDTO;
+import io.github.marbys.myrealworldapp.application.dto.ArticlePutDTO;
 import io.github.marbys.myrealworldapp.domain.ArticleContent;
 import io.github.marbys.myrealworldapp.domain.model.ArticleModel;
 import io.github.marbys.myrealworldapp.domain.model.MultipleArticleModel;
@@ -48,11 +49,11 @@ public class ArticleController {
   @PutMapping("/articles/{slug}")
   public ResponseEntity<ArticleModel> updateArticle(
       @PathVariable String slug,
-      @Valid @RequestBody ArticlePostDTO articlePostDto,
+      @Valid @RequestBody ArticlePutDTO articlePutDTO,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
     return ResponseEntity.ok(
         fromArticle(
-            service.updateArticle(slug, ArticleContent.from(articlePostDto), jwtPayload.getSub())));
+            service.updateArticle(slug, ArticleContent.from(articlePutDTO), jwtPayload.getSub())));
   }
 
   @DeleteMapping("/articles/{slug}")

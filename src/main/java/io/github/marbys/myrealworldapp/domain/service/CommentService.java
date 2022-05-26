@@ -6,9 +6,7 @@ import io.github.marbys.myrealworldapp.domain.Comment;
 import io.github.marbys.myrealworldapp.domain.User;
 import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationError;
 import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationException;
-import io.github.marbys.myrealworldapp.infrastructure.repository.ArticleRepository;
 import io.github.marbys.myrealworldapp.infrastructure.repository.CommentRepository;
-import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +17,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
 
+  private final CommentFindService commentFindService;
+  private final UserFindService userFindService;
+  private final ArticleFindService articleFindService;
   private final CommentRepository commentRepository;
-  private final UserRepository userRepository;
-  private final ArticleRepository articleRepository;
 
   public Comment addComment(String slug, CommentPostDTO commentPostDTO, long id) {
-    User author =
-        userRepository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    Article article =
-        articleRepository
-            .findBySlug(slug)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+    User author = userFindService.findUserById(id);
+    Article article = articleFindService.findBySlug(slug);
 
     Comment comment = Comment.fromPostDTO(commentPostDTO);
     comment.setAuthor(author);
@@ -41,38 +34,24 @@ public class CommentService {
   }
 
   public void deleteComment(String slug, long commentId, long id) {
-    User user =
-        userRepository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    Comment comment =
-        commentRepository
-            .findById(commentId)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.COMMENT_NOT_FOUND));
-    if (!comment.getAuthor().equals(user))
+    User author = userFindService.findUserById(id);
+    Comment comment = commentFindService.findByCommentId(commentId);
+
+    if (!comment.getAuthor().equals(author))
       throw new ApplicationException(ApplicationError.INVALID_REQUEST_COMMENT);
-    Article article =
-        articleRepository
-            .findBySlug(slug)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+    Article article = articleFindService.findBySlug(slug);
 
     if (article.getComments().contains(comment)) commentRepository.deleteById(commentId);
   }
 
   public Set<Comment> getAllCommentsFromArticle(String slug) {
-    return articleRepository
-        .findBySlug(slug)
-        .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND))
-        .getComments();
+    return articleFindService.findBySlug(slug).getComments();
   }
 
-  public Set<Comment> getAllCommentsFromArticle(String slug, long sub) {
-    User user =
-        userRepository
-            .findById(sub)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+  public Set<Comment> getAllCommentsFromArticle(String slug, long id) {
+    User author = userFindService.findUserById(id);
     return getAllCommentsFromArticle(slug).stream()
-        .map(user::withFollowingComment)
+        .map(author::withFollowingComment)
         .collect(Collectors.toSet());
   }
 }

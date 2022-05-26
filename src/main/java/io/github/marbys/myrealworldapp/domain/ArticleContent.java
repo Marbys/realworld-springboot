@@ -2,6 +2,7 @@ package io.github.marbys.myrealworldapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.marbys.myrealworldapp.application.dto.ArticlePostDTO;
+import io.github.marbys.myrealworldapp.application.dto.ArticlePutDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,14 @@ public class ArticleContent {
         articlePostDto.getDescription(),
         articlePostDto.getBody(),
         articlePostDto.getTagList());
+  }
+
+  public static ArticleContent from(ArticlePutDTO articlePutDTO) {
+    return new ArticleContent(
+        articlePutDTO.getTitle(),
+        articlePutDTO.getDescription(),
+        articlePutDTO.getBody(),
+        articlePutDTO.getTagList());
   }
 
   @Override

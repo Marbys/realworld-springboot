@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 public class UserService {
 
   private final UserRepository repository;
+  private final UserFindService userFindService;
   private final JwtUserService service;
   private final PasswordEncoder encoder;
 
@@ -44,28 +45,18 @@ public class UserService {
   }
 
   public UserModel findUser(long id) {
-    return repository
-        .findById(id)
-        .map(UserModel::fromEntity)
-        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    return UserModel.fromEntity(userFindService.findUserById(id));
   }
 
   public UserModel updateUser(UserPutDTO userPutDTO, Long id) {
-    User userEntity =
-        repository
-            .findById(id)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
-    repository.save(updateUser(userPutDTO, userEntity));
-    String newToken = service.tokenFromUserEntity(userEntity);
-    return UserModel.fromEntityAndToken(userEntity, newToken);
+    User user = userFindService.findUserById(id);
+    repository.save(updateUser(userPutDTO, user));
+    String newToken = service.tokenFromUserEntity(user);
+    return UserModel.fromEntityAndToken(user, newToken);
   }
 
   public Profile viewProfile(String username, Long id) {
-    Profile profile =
-        repository
-            .findByProfileUsername(username)
-            .map(User::getProfile)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    Profile profile = userFindService.findUserByUsername(username).getProfile();
     if (id > 0) {
       boolean match =
           repository
@@ -80,17 +71,11 @@ public class UserService {
   }
 
   public Profile viewProfile(String username) {
-    return repository
-        .findByProfileUsername(username)
-        .map(User::getProfile)
-        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    return userFindService.findUserByUsername(username).getProfile();
   }
 
   public Profile followUser(String username, Long id) {
-    User followee =
-        repository
-            .findByProfileUsername(username)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    User followee = userFindService.findUserByUsername(username);
     repository
         .findById(id)
         .map(e -> e.follow(followee))
@@ -101,10 +86,7 @@ public class UserService {
   }
 
   public Profile unfollowUser(String username, Long id) {
-    User followee =
-        repository
-            .findByProfileUsername(username)
-            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
+    User followee = userFindService.findUserByUsername(username);
     repository
         .findById(id)
         .map(e -> e.unfollow(followee))
