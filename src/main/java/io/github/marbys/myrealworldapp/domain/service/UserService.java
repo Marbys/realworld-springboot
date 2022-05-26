@@ -6,6 +6,8 @@ import io.github.marbys.myrealworldapp.domain.model.UserModel;
 import io.github.marbys.myrealworldapp.application.dto.UserLoginDTO;
 import io.github.marbys.myrealworldapp.application.dto.UserPostDTO;
 import io.github.marbys.myrealworldapp.application.dto.UserPutDTO;
+import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationError;
+import io.github.marbys.myrealworldapp.infrastructure.exception.ApplicationException;
 import io.github.marbys.myrealworldapp.infrastructure.jwt.JwtUserService;
 import io.github.marbys.myrealworldapp.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class UserService {
 
   public UserModel register(UserPostDTO user) {
     if (repository.existsByEmail(user.getEmail()))
-      throw new IllegalStateException("User with this email already exists!");
+      throw new ApplicationException(ApplicationError.DUPLICATED_USER);
     User entity = User.from(user.getUsername(), user.getPassword(), user.getEmail());
     entity.setPassword(encoder.encode(entity.getPassword()));
     entity = repository.save(entity);
@@ -45,11 +47,14 @@ public class UserService {
     return repository
         .findById(id)
         .map(UserModel::fromEntity)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
   }
 
   public UserModel updateUser(UserPutDTO userPutDTO, Long id) {
-    User userEntity = repository.findById(id).orElseThrow(NoSuchElementException::new);
+    User userEntity =
+        repository
+            .findById(id)
+            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     repository.save(updateUser(userPutDTO, userEntity));
     String newToken = service.tokenFromUserEntity(userEntity);
     return UserModel.fromEntityAndToken(userEntity, newToken);
@@ -60,12 +65,12 @@ public class UserService {
         repository
             .findByProfileUsername(username)
             .map(User::getProfile)
-            .orElseThrow(NoSuchElementException::new);
+            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     if (id > 0) {
       boolean match =
           repository
               .findById(id)
-              .orElseThrow(NoSuchElementException::new)
+              .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND))
               .getFollowingUsers()
               .stream()
               .anyMatch(entity -> entity.getProfile().getUsername().equals(username));
@@ -78,30 +83,34 @@ public class UserService {
     return repository
         .findByProfileUsername(username)
         .map(User::getProfile)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
   }
 
   public Profile followUser(String username, Long id) {
     User followee =
-        repository.findByProfileUsername(username).orElseThrow(NoSuchElementException::new);
+        repository
+            .findByProfileUsername(username)
+            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     repository
         .findById(id)
         .map(e -> e.follow(followee))
         .map(repository::save)
         .map(User::getProfile)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     return viewProfile(username, id);
   }
 
   public Profile unfollowUser(String username, Long id) {
     User followee =
-        repository.findByProfileUsername(username).orElseThrow(NoSuchElementException::new);
+        repository
+            .findByProfileUsername(username)
+            .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     repository
         .findById(id)
         .map(e -> e.unfollow(followee))
         .map(repository::save)
         .map(User::getProfile)
-        .orElseThrow(NoSuchElementException::new);
+        .orElseThrow(() -> new ApplicationException(ApplicationError.USER_NOT_FOUND));
     return viewProfile(username, id);
   }
 
