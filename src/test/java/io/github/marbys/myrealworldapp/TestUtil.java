@@ -22,7 +22,7 @@ public class TestUtil {
   }
 
   public static User sampleUser() {
-    return new User(PASSWORD, EMAIL, new Profile(USERNAME));
+    return new User(PASSWORD, EMAIL, sampleProfile());
   }
 
   public static UserModel sampleUserModel() {

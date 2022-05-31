@@ -15,9 +15,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentService implements CommentFindService {
 
-  private final CommentFindService commentFindService;
   private final UserFindService userFindService;
   private final ArticleFindService articleFindService;
   private final CommentRepository commentRepository;
@@ -35,7 +34,7 @@ public class CommentService {
 
   public void deleteComment(String slug, long commentId, long id) {
     User author = userFindService.findUserById(id);
-    Comment comment = commentFindService.findByCommentId(commentId);
+    Comment comment = findByCommentId(commentId);
 
     if (!comment.getAuthor().equals(author))
       throw new ApplicationException(ApplicationError.INVALID_REQUEST_COMMENT);
@@ -53,5 +52,12 @@ public class CommentService {
     return getAllCommentsFromArticle(slug).stream()
         .map(author::withFollowingComment)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Comment findByCommentId(long id) {
+    return commentRepository
+        .findById(id)
+        .orElseThrow(() -> new ApplicationException(ApplicationError.COMMENT_NOT_FOUND));
   }
 }

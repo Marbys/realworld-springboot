@@ -20,15 +20,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleService {
+public class ArticleService implements ArticleFindService {
 
   private final UserFindService userFindService;
-  private final ArticleFindService articleFindService;
   private final ArticleRepository articleRepository;
   private final TagService tagService;
 
   public Article getArticleBySlug(String slug) {
-    return articleFindService.findBySlug(slug);
+    return findBySlug(slug);
   }
 
   public Article createArticle(ArticleContent articleContent, long id) {
@@ -52,12 +51,12 @@ public class ArticleService {
 
   public Article getArticleBySlug(String slug, long id) {
     User user = userFindService.findUserById(id);
-    return articleFindService.findBySlug(slug, user);
+    return findBySlug(slug, user);
   }
 
   public Article favoriteArticle(String slug, long id) {
     User user = userFindService.findUserById(id);
-    Article article = articleFindService.findBySlug(slug);
+    Article article = findBySlug(slug);
     article.getUserFavorites().add(user);
     articleRepository.save(article);
     return article.setFavourite(true);
@@ -65,7 +64,7 @@ public class ArticleService {
 
   public Article unfavoriteArticle(String slug, long id) {
     User user = userFindService.findUserById(id);
-    Article article = articleFindService.findBySlug(slug);
+    Article article = findBySlug(slug);
     article.getUserFavorites().remove(user);
     articleRepository.save(article);
     return article.setFavourite(false);
@@ -107,5 +106,19 @@ public class ArticleService {
               user.withFollowingArticle(article);
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Article findBySlug(String slug) {
+    return articleRepository
+        .findBySlug(slug)
+        .orElseThrow(() -> new ApplicationException(ApplicationError.ARTICLE_NOT_FOUND));
+  }
+
+  @Override
+  public Article findBySlug(String slug, User user) {
+    Article article = findBySlug(slug);
+    article.setFavourite(article.getUserFavorites().contains(user));
+    return article;
   }
 }
