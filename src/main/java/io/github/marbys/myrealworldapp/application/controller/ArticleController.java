@@ -39,7 +39,6 @@ public class ArticleController {
   public ResponseEntity<ArticleModel> createArticle(
       @Valid @RequestBody ArticlePostDTO articlePostDto,
       @AuthenticationPrincipal JwtPayload jwtPayload) {
-    System.out.println(articlePostDto.toString());
     return ResponseEntity.status(CREATED)
         .body(
             fromArticle(

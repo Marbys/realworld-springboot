@@ -3,6 +3,8 @@ package io.github.marbys.myrealworldapp.domain.model;
 import io.github.marbys.myrealworldapp.domain.Tag;
 import lombok.*;
 
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,9 @@ public class TagModel {
   }
 
   public static Set<String> fromTagSet(Set<Tag> tags) {
-    return tags.stream().map(Tag::getName).collect(Collectors.toSet());
+    return tags.stream()
+        .map(Tag::getName)
+        .sorted(Comparator.naturalOrder())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }
