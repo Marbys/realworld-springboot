@@ -8,14 +8,23 @@
 
 This codebase was created to demonstrate a fully fledged fullstack application built with Spring boot including CRUD operations, authentication, routing, pagination, and more.
 
-We've gone to great lengths to adhere to the Spring boot community styleguides & best practices.
-
-For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
-
+List of available endpoints is described [here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints)
 
 # How it works
 
-Application was build using:
+General features:
+
+- Authenticate users via JWT (login/signup pages + logout button on settings page)
+- CRU* users (sign up & settings page - no deleting required)
+- CRUD Articles
+- CR*D Comments on articles (no updating required)
+- GET and display paginated lists of articles
+- Favorite articles
+- Follow other users\
+
+for more details regarding available endpoints head [here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints).
+
+Application was created using:
 - Java 11
 - Spring Boot 2
 - Spring Data
@@ -34,4 +43,9 @@ Clone the repository and start project using
 ## Running tests
 In order to run tests use:
 ```./mvnw test```
+
+
+Additional tests may be performed using postman collection [Postman Collection](https://github.com/gothinkster/realworld/blob/main/api/Conduit.postman_collection.json).
+
+![tests](testresult.png)
 
