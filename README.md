@@ -20,7 +20,7 @@ General features:
 - CR*D Comments on articles (no updating required)
 - GET and display paginated lists of articles
 - Favorite articles
-- Follow other users\
+- Follow other users
 
 for more details regarding available endpoints head [here](https://realworld-docs.netlify.app/docs/specs/backend-specs/endpoints).
 
