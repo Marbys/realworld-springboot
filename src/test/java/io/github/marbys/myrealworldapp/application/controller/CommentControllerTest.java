@@ -44,7 +44,7 @@ public class CommentControllerTest {
 
     mockMvc
         .perform(
-            post("/api/articles/{slug}/comments", slug)
+            post("/articles/{slug}/comments", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isCreated())
@@ -58,7 +58,7 @@ public class CommentControllerTest {
 
     mockMvc
         .perform(
-            post("/api/articles/{slug}/comments", slug)
+            post("/articles/{slug}/comments", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isForbidden());
@@ -70,7 +70,7 @@ public class CommentControllerTest {
     String slug = "how-to-train-your-dragon";
 
     mockMvc
-        .perform(delete("/api/articles/{slug}/comments/{commentId}", slug, 1))
+        .perform(delete("/articles/{slug}/comments/{commentId}", slug, 1))
         .andExpect(status().isNoContent());
   }
 
@@ -79,7 +79,7 @@ public class CommentControllerTest {
     String slug = "how-to-train-your-dragon";
 
     mockMvc
-        .perform(delete("/api/articles/{slug}/comments/{commentId}", slug, 1))
+        .perform(delete("/articles/{slug}/comments/{commentId}", slug, 1))
         .andExpect(status().isForbidden());
   }
 
@@ -91,7 +91,7 @@ public class CommentControllerTest {
         .thenReturn(Collections.singleton(sampleComment()));
 
     mockMvc
-        .perform(get("/api/articles/{slug}/comments", slug).accept(MediaType.APPLICATION_JSON))
+        .perform(get("/articles/{slug}/comments", slug).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validMultipleCommentModel());
   }

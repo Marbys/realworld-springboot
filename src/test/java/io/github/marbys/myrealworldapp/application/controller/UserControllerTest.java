@@ -46,7 +46,7 @@ public class UserControllerTest {
 
     mockMvc
         .perform(
-            post("/api/users/login")
+            post("/users/login")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(sampleLoginDTO())))
         .andExpect(status().isOk())
@@ -59,7 +59,7 @@ public class UserControllerTest {
 
     mockMvc
         .perform(
-            post("/api/users/login")
+            post("/users/login")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userLoginDTO)))
         .andExpect(status().isBadRequest());
@@ -70,7 +70,7 @@ public class UserControllerTest {
     when(userService.login(sampleLoginDTO())).thenReturn(sampleUserModel());
     mockMvc
         .perform(
-            post("/api/users/login")
+            post("/users/login")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(sampleLoginDTO()))
                 .header(AUTHORIZATION, "invalid auth"))
@@ -83,7 +83,7 @@ public class UserControllerTest {
     when(userService.register(any(UserPostDTO.class))).thenReturn(sampleUserModel());
     mockMvc
         .perform(
-            post("/api/users")
+            post("/users")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(samplePostDTO())))
         .andExpect(status().isCreated())
@@ -95,7 +95,7 @@ public class UserControllerTest {
     when(userService.register(any(UserPostDTO.class))).thenReturn(sampleUserModel());
     mockMvc
         .perform(
-            post("/api/users")
+            post("/users")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new UserPostDTO("", "", ""))))
         .andExpect(status().isBadRequest());
@@ -107,7 +107,7 @@ public class UserControllerTest {
     when(userService.updateUser(any(UserPutDTO.class), anyLong())).thenReturn(sampleUserModel());
     mockMvc
         .perform(
-            put("/api/user")
+            put("/user")
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(samplePutDTO())))
         .andExpect(status().isOk())
@@ -116,14 +116,14 @@ public class UserControllerTest {
 
   @Test
   void when_put_user_unauthenticated_expect_valid_userModel() throws Exception {
-    mockMvc.perform(put("/api/user")).andExpect(status().isForbidden());
+    mockMvc.perform(put("/user")).andExpect(status().isForbidden());
   }
 
   @Test
   void when_get_profile_expect_valid_profile() throws Exception {
     when(userService.viewProfile(anyString())).thenReturn(sampleProfile());
     mockMvc
-        .perform(get("/api/profiles/user").accept(APPLICATION_JSON))
+        .perform(get("/profiles/user").accept(APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validProfile());
   }
@@ -133,14 +133,14 @@ public class UserControllerTest {
   void when_follow_user_expect_valid_profile() throws Exception {
     when(userService.followUser(anyString(), anyLong())).thenReturn(sampleProfile());
     mockMvc
-        .perform(post("/api/profiles/user/follow").contentType(APPLICATION_JSON))
+        .perform(post("/profiles/user/follow").contentType(APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validProfile());
   }
 
   @Test
   void when_follow_profile_unauthenticated_expect_status_forbidden() throws Exception {
-    mockMvc.perform(post("/api/profiles/user/follow")).andExpect(status().isForbidden());
+    mockMvc.perform(post("/profiles/user/follow")).andExpect(status().isForbidden());
   }
 
   @Test
@@ -148,13 +148,13 @@ public class UserControllerTest {
   void when_unfollow_profile_expect_valid_user_model() throws Exception {
     when(userService.unfollowUser(anyString(), anyLong())).thenReturn(sampleProfile());
     mockMvc
-        .perform(delete("/api/profiles/user/follow").contentType(APPLICATION_JSON))
+        .perform(delete("/profiles/user/follow").contentType(APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validProfile());
   }
 
   @Test
   void when_unfollow_profile_unauthenticated_expect_status_forbidden() throws Exception {
-    mockMvc.perform(delete("/api/profiles/user/follow")).andExpect(status().isForbidden());
+    mockMvc.perform(delete("/profiles/user/follow")).andExpect(status().isForbidden());
   }
 }

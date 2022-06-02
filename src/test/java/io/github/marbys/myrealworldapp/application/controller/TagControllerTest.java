@@ -36,7 +36,7 @@ public class TagControllerTest {
     when(tagService.getAllTags()).thenReturn(result);
 
     mockMvc
-        .perform(get("/api/tags").accept(MediaType.APPLICATION_JSON))
+        .perform(get("/tags").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validMultipleTagModel());
   }

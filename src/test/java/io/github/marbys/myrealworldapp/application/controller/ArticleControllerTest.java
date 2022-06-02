@@ -45,7 +45,7 @@ public class ArticleControllerTest {
     when(articleService.getArticleBySlug(slug)).thenReturn(result);
 
     mockMvc
-        .perform(get("/api/articles/{slug}", slug).accept(MediaType.APPLICATION_JSON))
+        .perform(get("/articles/{slug}", slug).accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validSingleArticleModel());
   }
@@ -60,7 +60,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            post("/api/articles")
+            post("/articles")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isCreated())
@@ -73,7 +73,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            post("/api/articles")
+            post("/articles")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isForbidden());
@@ -87,7 +87,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            post("/api/articles")
+            post("/articles")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isBadRequest());
@@ -104,7 +104,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            put("/api/articles/{slug}", slug)
+            put("/articles/{slug}", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isOk())
@@ -118,7 +118,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            put("/api/articles/{slug}", slug)
+            put("/articles/{slug}", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isForbidden());
@@ -129,14 +129,14 @@ public class ArticleControllerTest {
   void when_delete_article_return_status_no_content() throws Exception {
     String slug = "how-to-train-your-dragon";
 
-    mockMvc.perform(delete("/api/articles/{slug}", slug)).andExpect(status().isNoContent());
+    mockMvc.perform(delete("/articles/{slug}", slug)).andExpect(status().isNoContent());
   }
 
   @Test
   void when_delete_unauthenticated_return_status_forbidden() throws Exception {
     String slug = "how-to-train-your-dragon";
 
-    mockMvc.perform(delete("/api/articles/{slug}", slug)).andExpect(status().isForbidden());
+    mockMvc.perform(delete("/articles/{slug}", slug)).andExpect(status().isForbidden());
   }
 
   @Test
@@ -148,7 +148,7 @@ public class ArticleControllerTest {
     when(articleService.favoriteArticle(eq(slug), anyLong())).thenReturn(article);
 
     mockMvc
-        .perform(post("/api/articles/{slug}/favorite", slug))
+        .perform(post("/articles/{slug}/favorite", slug))
         .andExpect(status().isOk())
         .andExpectAll(validSingleArticleModel())
         .andExpect(jsonPath("$.article.favorited", is(true)));
@@ -163,7 +163,7 @@ public class ArticleControllerTest {
     when(articleService.unfavoriteArticle(eq(slug), anyLong())).thenReturn(body);
 
     mockMvc
-        .perform(delete("/api/articles/{slug}/favorite", slug))
+        .perform(delete("/articles/{slug}/favorite", slug))
         .andExpect(status().isOk())
         .andExpectAll(validSingleArticleModel())
         .andExpect(jsonPath("$.article.favorited", is(false)));
@@ -179,7 +179,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            get("/api/articles")
+            get("/articles")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(body)))
         .andExpect(status().isOk())
@@ -196,7 +196,7 @@ public class ArticleControllerTest {
 
     mockMvc
         .perform(
-            get("/api/articles/feed")
+            get("/articles/feed")
                 .accept(MediaType.APPLICATION_JSON)
                 .param("limit", "1")
                 .param("offset", "0"))

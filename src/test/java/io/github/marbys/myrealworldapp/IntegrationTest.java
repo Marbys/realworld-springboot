@@ -48,7 +48,7 @@ public class IntegrationTest {
   void auth_register() throws Exception {
     mockMvc
         .perform(
-            post("/api/users")
+            post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     objectMapper.writeValueAsString(new UserPostDTO(USERNAME, EMAIL, PASSWORD))))
@@ -62,7 +62,7 @@ public class IntegrationTest {
     String user =
         mockMvc
             .perform(
-                post("/api/users/login")
+                post("/users/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(new UserLoginDTO(EMAIL, PASSWORD))))
             .andExpect(status().isOk())
@@ -78,7 +78,7 @@ public class IntegrationTest {
   void update_user() throws Exception {
     mockMvc
         .perform(
-            put("/api/user")
+            put("/user")
                 .header("Authorization", token)
                 .content(objectMapper.writeValueAsString(sampleUserPutDTO()))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -94,7 +94,7 @@ public class IntegrationTest {
     String user =
         mockMvc
             .perform(
-                post("/api/users")
+                post("/users")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(
                         objectMapper.writeValueAsString(
@@ -112,7 +112,7 @@ public class IntegrationTest {
   void view_profile() throws Exception {
     mockMvc
         .perform(
-            get("/api/profiles/{username}", USERNAME)
+            get("/profiles/{username}", USERNAME)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization", token))
         .andExpect(status().isOk())
@@ -124,7 +124,7 @@ public class IntegrationTest {
   void follow_user() throws Exception {
     mockMvc
         .perform(
-            post("/api/profiles/{username}/follow", FOLLOWED_USERNAME)
+            post("/profiles/{username}/follow", FOLLOWED_USERNAME)
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -137,7 +137,7 @@ public class IntegrationTest {
   void unfollow_user() throws Exception {
     mockMvc
         .perform(
-            delete("/api/profiles/{username}/follow", USERNAME)
+            delete("/profiles/{username}/follow", USERNAME)
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
@@ -149,7 +149,7 @@ public class IntegrationTest {
     String article =
         mockMvc
             .perform(
-                post("/api/articles")
+                post("/articles")
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", followed_token)
                     .content(objectMapper.writeValueAsString(sampleArticlePostDto())))
@@ -166,7 +166,7 @@ public class IntegrationTest {
   void post_favorited_article() throws Exception {
     mockMvc
         .perform(
-            post("/api/articles/{slug}/favorite", slug)
+            post("/articles/{slug}/favorite", slug)
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -179,7 +179,7 @@ public class IntegrationTest {
   void get_favorited_article() throws Exception {
     mockMvc
         .perform(
-            get("/api/articles/{slug}", slug)
+            get("/articles/{slug}", slug)
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -192,9 +192,7 @@ public class IntegrationTest {
   void get_article_feed() throws Exception {
     mockMvc
         .perform(
-            get("/api/articles/feed")
-                .accept(MediaType.APPLICATION_JSON)
-                .header("Authorization", token))
+            get("/articles/feed").accept(MediaType.APPLICATION_JSON).header("Authorization", token))
         .andExpect(status().isOk())
         .andExpectAll(validMultipleArticleModel());
   }
@@ -211,7 +209,7 @@ public class IntegrationTest {
 
     mockMvc
         .perform(
-            put("/api/articles/{slug}", slug)
+            put("/articles/{slug}", slug)
                 .header("Authorization", followed_token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(articleToUpdate)))
@@ -225,7 +223,7 @@ public class IntegrationTest {
   void unfavorite_article() throws Exception {
     mockMvc
         .perform(
-            delete("/api/articles/{slug}/favorite", slug)
+            delete("/articles/{slug}/favorite", slug)
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -238,7 +236,7 @@ public class IntegrationTest {
   void post_comment() throws Exception {
     mockMvc
         .perform(
-            post("/api/articles/{slug}/comments", slug)
+            post("/articles/{slug}/comments", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
                 .content(objectMapper.writeValueAsString(sampleCommentPostDTO())))
@@ -250,7 +248,7 @@ public class IntegrationTest {
   @Test
   void get_comments_from_article() throws Exception {
     mockMvc
-        .perform(get("/api/articles/{slug}/comments", slug).accept(MediaType.APPLICATION_JSON))
+        .perform(get("/articles/{slug}/comments", slug).accept(MediaType.APPLICATION_JSON))
         .andExpectAll(validMultipleCommentModel())
         .andExpect(status().isOk());
   }
@@ -260,7 +258,7 @@ public class IntegrationTest {
   void delete_comment() throws Exception {
     mockMvc
         .perform(
-            delete("/api/articles/{slug}/comments/1", slug)
+            delete("/articles/{slug}/comments/1", slug)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", token)
                 .content(objectMapper.writeValueAsString(sampleCommentPostDTO())))
@@ -271,7 +269,7 @@ public class IntegrationTest {
   @Test
   void get_multiple_articles() throws Exception {
     mockMvc
-        .perform(get("/api/articles").accept(MediaType.APPLICATION_JSON))
+        .perform(get("/articles").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpectAll(validMultipleArticleModel());
   }
@@ -280,7 +278,7 @@ public class IntegrationTest {
   @Test
   void get_all_articles_with_tag() throws Exception {
     mockMvc
-        .perform(get("/api/articles").queryParam("tag", "dragons").header(AUTHORIZATION, token))
+        .perform(get("/articles").queryParam("tag", "dragons").header(AUTHORIZATION, token))
         .andExpect(status().isOk())
         .andExpectAll(validMultipleArticleModel());
   }
@@ -289,7 +287,7 @@ public class IntegrationTest {
   @Test
   void get_single_article_by_slug() throws Exception {
     mockMvc
-        .perform(get("/api/articles/{slug}", slug))
+        .perform(get("/articles/{slug}", slug))
         .andExpect(status().isOk())
         .andExpectAll(validSingleArticleModel());
   }
@@ -298,7 +296,7 @@ public class IntegrationTest {
   @Test
   void delete_article() throws Exception {
     mockMvc
-        .perform(delete("/api/articles/{slug}", slug).header("Authorization", followed_token))
+        .perform(delete("/articles/{slug}", slug).header("Authorization", followed_token))
         .andExpect(status().isNoContent());
   }
 
@@ -306,7 +304,7 @@ public class IntegrationTest {
   @Test
   void get_tags() throws Exception {
     mockMvc
-        .perform(get("/api/tags").accept(MediaType.APPLICATION_JSON))
+        .perform(get("/tags").accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("tags", is(hasSize(3))))
         .andExpect(jsonPath("tags[0]").isString());

@@ -21,7 +21,6 @@ import static io.github.marbys.myrealworldapp.domain.model.ArticleModel.fromArti
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ArticleController {
 
